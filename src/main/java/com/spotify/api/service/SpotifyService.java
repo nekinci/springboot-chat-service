@@ -6,9 +6,10 @@ import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
+import com.wrapper.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.stereotype.Service;
-
+import com.wrapper.spotify.model_objects.specification.User;
 import java.io.IOException;
 import java.net.URI;
 
@@ -33,21 +34,26 @@ public class SpotifyService{
             spotifyApi.setAccessToken(credentials.getAccessToken());
             spotifyApi.setRefreshToken(credentials.getRefreshToken());
             return _mapping(credentials);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (SpotifyWebApiException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ParseException e) {
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public boolean validateToken(){
-        return false;
+    public User me(UserToken token){
+        spotifyApi
+                .setAccessToken(token.getToken());
+        GetCurrentUsersProfileRequest _meReq = spotifyApi.getCurrentUsersProfile().build();
+        try {
+            return _meReq.execute();
+
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
+
     private UserToken _mapping(AuthorizationCodeCredentials credentials){
         UserToken userToken = new UserToken();
         userToken.setToken(credentials.getAccessToken());
