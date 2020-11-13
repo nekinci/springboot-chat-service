@@ -8,16 +8,13 @@ public class Jwt {
 
     /**
      *
-     * ***************************************************
-     *
      * If token expired return false, else return true
      * @author Niyazi Ekinci
      * @version 1.0
      *
-     * ****************************************************
-     *
      * */
     public static boolean checkToken(UserToken token){
-        return !(token.getLastChangeAt().getSecond() + token.getExpiresIn() <= LocalDateTime.now().getSecond());
+        if (token.getLastChangeAt() == null) return false;
+        return !(token.getLastChangeAt().plusSeconds(token.getExpiresIn()).isBefore(LocalDateTime.now()) || token.getLastChangeAt().plusSeconds(token.getExpiresIn()).isEqual(LocalDateTime.now()));
     }
 }

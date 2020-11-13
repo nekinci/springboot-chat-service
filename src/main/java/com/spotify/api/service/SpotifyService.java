@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.wrapper.spotify.model_objects.specification.User;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @Service
 public class SpotifyService{
@@ -44,15 +45,21 @@ public class SpotifyService{
 
     public UserToken refreshToken(UserToken token){
         AuthorizationCodeRefreshRequest refreshRequest = spotifyApi.authorizationCodeRefresh(SpotifyAPI.CLIENT_ID, SpotifyAPI.CLIENT_SECRET, token.getRefreshToken()).build();
-
+        try {
+            AuthorizationCodeCredentials credentials = refreshRequest.execute();
+            UserToken _token = new UserToken();
+            _token.setToken(credentials.getAccessToken());
+            _token.setExpiresIn(credentials.getExpiresIn());
+            _token.setLastChangeAt(LocalDateTime.now());
+            return _token;
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public User me(UserToken token){
-        if(!Jwt.checkToken(token)){
-            return null;
-        }
-        spotifyApi
-                .setAccessToken(token.getToken());
+        spotifyApi.setAccessToken(token.getToken());
         GetCurrentUsersProfileRequest _meReq = spotifyApi.getCurrentUsersProfile().build();
         try {
             return _meReq.execute();
