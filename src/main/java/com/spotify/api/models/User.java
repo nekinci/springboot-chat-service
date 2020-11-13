@@ -1,9 +1,7 @@
 package com.spotify.api.models;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +15,8 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Document(collection = "users")
-@Builder(access = AccessLevel.PUBLIC)
+@SuperBuilder
+@AllArgsConstructor
 public class User extends BaseModel {
     @Id
     private String id;

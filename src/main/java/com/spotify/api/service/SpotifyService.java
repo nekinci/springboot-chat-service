@@ -2,9 +2,11 @@ package com.spotify.api.service;
 
 import com.spotify.api.constants.SpotifyAPI;
 import com.spotify.api.models.UserToken;
+import com.spotify.api.util.Jwt;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import com.wrapper.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 import org.apache.hc.core5.http.ParseException;
@@ -40,7 +42,15 @@ public class SpotifyService{
         }
     }
 
+    public UserToken refreshToken(UserToken token){
+        AuthorizationCodeRefreshRequest refreshRequest = spotifyApi.authorizationCodeRefresh(SpotifyAPI.CLIENT_ID, SpotifyAPI.CLIENT_SECRET, token.getRefreshToken()).build();
+
+    }
+
     public User me(UserToken token){
+        if(!Jwt.checkToken(token)){
+            return null;
+        }
         spotifyApi
                 .setAccessToken(token.getToken());
         GetCurrentUsersProfileRequest _meReq = spotifyApi.getCurrentUsersProfile().build();
