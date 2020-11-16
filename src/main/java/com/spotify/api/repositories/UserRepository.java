@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface UserRepository extends MongoRepository<User, String> {
     User findBySpotifyId(String id);
+    User findByEmailAndEndDateNull(String email);
 }

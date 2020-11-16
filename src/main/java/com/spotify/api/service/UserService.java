@@ -14,7 +14,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    public void createUserOrUpdateToken(com.wrapper.spotify.model_objects.specification.User user, UserToken token){
+    public User createUserOrUpdateToken(com.wrapper.spotify.model_objects.specification.User user, UserToken token){
         User _user = userRepository.findBySpotifyId(user.getId());
         if(_user == null){
             List<String> fullName = new ArrayList<>(3);
@@ -41,6 +41,7 @@ public class UserService {
         }
 
         userRepository.save(_user);
+        return _user;
     }
 
     public User updateUser(User user){
@@ -61,5 +62,13 @@ public class UserService {
         return null;
     }
 
+    public User me(){
+        return null;
+    }
 
+
+    public User getUserByEmail(String email){
+        if(email == null) return null;
+        return userRepository.findByEmailAndEndDateNull(email);
+    }
 }

@@ -1,5 +1,6 @@
 package com.spotify.api.controllers;
 
+import com.spotify.api.config.JwtRequestFilter;
 import com.spotify.api.models.User;
 import com.spotify.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,5 +15,10 @@ public class UserController {
     @PutMapping
     public User update(@RequestBody() User user){
         return service.updateUser(user);
+    }
+
+    @GetMapping("/me")
+    public User me(){
+        return service.me();
     }
 }

@@ -2,7 +2,6 @@ package com.spotify.api.service;
 
 import com.spotify.api.constants.SpotifyAPI;
 import com.spotify.api.models.UserToken;
-import com.spotify.api.util.Jwt;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
