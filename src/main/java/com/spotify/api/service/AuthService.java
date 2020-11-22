@@ -26,6 +26,7 @@ public class AuthService {
         String token = jwtTokenUtil.generateToken(_user);
         System.out.println(result.getToken());
         System.out.println("\n\n"+token);
+        System.out.println(jwtTokenUtil.getExpirationDateFromToken(token));
         return result.getToken();
 
     }

@@ -1,8 +1,11 @@
 package com.spotify.api.service;
 
+import com.spotify.api.models.Detail;
 import com.spotify.api.models.User;
 import com.spotify.api.models.UserToken;
 import com.spotify.api.repositories.UserRepository;
+import com.spotify.api.util.JwtTokenUtil;
+import com.spotify.api.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +17,16 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ServletUtil servletUtil;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     public User createUserOrUpdateToken(com.wrapper.spotify.model_objects.specification.User user, UserToken token){
         User _user = userRepository.findBySpotifyId(user.getId());
+
         if(_user == null){
             List<String> fullName = new ArrayList<>(3);
             fullName.addAll(Arrays.asList(user.getDisplayName().split(" ")));
@@ -39,7 +50,12 @@ public class UserService {
             userToken.setLastChangeAt(LocalDateTime.now());
             _user.setUserToken(userToken);
         }
-
+        Detail _detail = Detail.builder()
+                .agent(servletUtil.getHeader("User-Agent"))
+                .ipAddress(servletUtil.getIpAddress())
+                .loginDate(new Date())
+                .build();
+        _user.getLoginDetails().add(_detail);
         userRepository.save(_user);
         return _user;
     }
@@ -63,12 +79,21 @@ public class UserService {
     }
 
     public User me(){
-        return null;
+        String email = jwtTokenUtil.getEmailFromToken(servletUtil.getAuthTokenFromRequest());
+        return userRepository.findByEmailAndEndDateNull(email);
     }
 
 
     public User getUserByEmail(String email){
         if(email == null) return null;
         return userRepository.findByEmailAndEndDateNull(email);
+    }
+
+    public void setLastSeen(){
+        String email = jwtTokenUtil.getEmailFromToken(servletUtil.getAuthTokenFromRequest());
+        User user = userRepository.findByEmailAndEndDateNull(email);
+        if(user == null) return;
+        user.setLastSeenDate(new Date());
+        userRepository.save(user);
     }
 }

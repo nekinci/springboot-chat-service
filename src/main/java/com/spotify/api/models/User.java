@@ -4,16 +4,24 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Document(collection = "users")
 @SuperBuilder
 @AllArgsConstructor
-@NoArgsConstructor
 public class User extends BaseModel {
+
+    public User(){
+        if(Objects.isNull(loginDetails)){
+            loginDetails = new ArrayList<Detail>();
+        }
+    }
     @Id
     private String id;
     private String name;
@@ -30,7 +38,7 @@ public class User extends BaseModel {
     private List<String> hobbyList;
     private UserToken userToken;
     private Date lastSeenDate;
-
+    private List<Detail> loginDetails;
 
     //TODO: permission list
 

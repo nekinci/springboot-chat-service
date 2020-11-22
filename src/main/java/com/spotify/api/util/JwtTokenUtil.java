@@ -5,22 +5,27 @@ import com.spotify.api.models.UserToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.hc.client5.http.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
 
-    private static final long JWT_TOKEN_VALIDITY = 30*24*60*60; // 30 gün
+    private static final long JWT_TOKEN_VALIDITY = TimeUnit.MILLISECONDS.convert(30, TimeUnit.DAYS); // 30 gün
     public static final String SPOTIFY_ID_CLAIM = "spotify_id";
     public static final String NAME_CLAIM = "name";
     public static final String FAMILY_NAME_CLAIM = "family_name";
@@ -73,18 +78,21 @@ public class JwtTokenUtil {
     }
 
     public String doGenerateToken(Map<String, Object> claims, String subject){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        System.out.println("içeri" + cal);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setExpiration(cal.getTime())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
-    public Boolean validateToken(String token, User user){
+    public Boolean validateToken(String token, UserDetails user){
         final String email = getEmailFromToken(token);
-        return (email.equals(user.getEmail()) && !isTokenExpired(token));
+        return (email.equals(user.getUsername()) && !isTokenExpired(token));
     }
 
     /**
