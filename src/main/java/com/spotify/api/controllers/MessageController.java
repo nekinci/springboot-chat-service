@@ -1,7 +1,11 @@
 package com.spotify.api.controllers;
 
 import com.spotify.api.models.Message;
+import com.spotify.api.repositories.UserRepository;
+import com.spotify.api.service.SpotifyService;
 import com.spotify.api.util.ServletUtil;
+import com.wrapper.spotify.model_objects.specification.Episode;
+import com.wrapper.spotify.model_objects.specification.Track;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
 public class MessageController {
@@ -25,11 +31,16 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @Autowired private SimpUserRegistry registry;
+    @Autowired private SpotifyService spotifyService;
+    @Autowired private UserRepository repository;
     @MessageMapping("/message")
+    public void onMessage(@Payload Message message, Principal user) {
 
-    public void onMessage(@Payload Message message, SimpMessageHeaderAccessor headerAccessor){
-        headerAccessor.getSessionAttributes().forEach(System.out::printf);
-        System.out.println(message);
+        message.setId(UUID.randomUUID().toString());
+        message.setDate(new Date());
+        message.setFrom(user.getName());
+        message.setType(Message.MessageType.MESSAGE);
+        messagingTemplate.convertAndSend("/topic/general", message);
 
     }
 }

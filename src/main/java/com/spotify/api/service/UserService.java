@@ -28,18 +28,16 @@ public class UserService {
         User _user = userRepository.findBySpotifyId(user.getId());
 
         if(_user == null){
-            List<String> fullName = new ArrayList<>(3);
-            fullName.addAll(Arrays.asList(user.getDisplayName().split(" ")));
-            fullName.set(0, fullName.get(0) == null ? "" : fullName.get(0));
-            fullName.set(1, fullName.get(1) == null ? "" : fullName.get(1));
+            String names[] = user.getDisplayName().split(" ");
             token.setLastChangeAt(LocalDateTime.now());
             _user = User.builder()
-                    .name(fullName.get(0))
-                    .surname(fullName.get(1))
+                    .name(names.length >= 1 ? names[0] : "Unnamed")
+                    .surname(names.length >= 2 ? names[1]: "")
                     .email(user.getEmail())
                     .spotifyId(user.getId())
                     .userToken(token)
                     .createDate(new Date())
+                    .loginDetails(new ArrayList<>())
                     .build();
 
         }

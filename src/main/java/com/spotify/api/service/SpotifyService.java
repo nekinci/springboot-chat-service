@@ -2,11 +2,15 @@ package com.spotify.api.service;
 
 import com.spotify.api.constants.SpotifyAPI;
 import com.spotify.api.models.UserToken;
+import com.spotify.api.util.JwtTokenUtil;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import com.wrapper.spotify.model_objects.miscellaneous.CurrentlyPlaying;
+import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
+import com.wrapper.spotify.requests.data.player.GetUsersCurrentlyPlayingTrackRequest;
 import com.wrapper.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.stereotype.Service;
@@ -25,9 +29,24 @@ public class SpotifyService{
         this.spotifyApi = new SpotifyApi.Builder()
                 .setClientId(SpotifyAPI.CLIENT_ID)
                 .setClientSecret(SpotifyAPI.CLIENT_SECRET)
-                .setRedirectUri(URI.create("http://localhost:4200/login"))
+                .setRedirectUri(URI.create(SpotifyAPI.REDIRECT_URI))
                 .build();
 
+    }
+
+    public Track currentPlaying(UserToken token){
+        token = ifRequireRefreshToken(token);
+        spotifyApi.setAccessToken(token.getToken());
+        GetUsersCurrentlyPlayingTrackRequest currentlyPlaying = spotifyApi.getUsersCurrentlyPlayingTrack().build();
+        try {
+
+            Track track = (Track) currentlyPlaying.execute().getItem();
+            return track;
+
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     public UserToken getToken(String code){
         this.authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
@@ -57,6 +76,11 @@ public class SpotifyService{
         }
     }
 
+    public UserToken ifRequireRefreshToken(UserToken token){
+        if(!JwtTokenUtil.isAlive(token)) return refreshToken(token);
+        return token;
+    }
+
     public User me(UserToken token){
         spotifyApi.setAccessToken(token.getToken());
         GetCurrentUsersProfileRequest _meReq = spotifyApi.getCurrentUsersProfile().build();
@@ -79,3 +103,5 @@ public class SpotifyService{
 
     }
 }
+
+

@@ -1,12 +1,14 @@
 package com.spotify.api.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
+@AllArgsConstructor
 public class Room extends BaseModel{
 
     private String roomName;

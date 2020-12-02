@@ -18,9 +18,7 @@ import java.util.Objects;
 public class User extends BaseModel {
 
     public User(){
-        if(Objects.isNull(loginDetails)){
-            loginDetails = new ArrayList<Detail>();
-        }
+
     }
     @Id
     private String id;

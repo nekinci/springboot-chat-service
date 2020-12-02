@@ -102,7 +102,7 @@ public class JwtTokenUtil {
      * @version 1.0
      *
      * */
-    public static boolean checkSpotifyToken(UserToken token){
+    public static boolean isAlive(UserToken token){
         if (token.getLastChangeAt() == null) return false;
         return !(token.getLastChangeAt().plusSeconds(token.getExpiresIn()).isBefore(LocalDateTime.now()) || token.getLastChangeAt().plusSeconds(token.getExpiresIn()).isEqual(LocalDateTime.now()));
     }
