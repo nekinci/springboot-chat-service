@@ -1,6 +1,6 @@
 package com.spotify.api.core;
 
-import com.spotify.api.models.User;
+import com.spotify.api.model.User;
 
 import java.util.ArrayList;
 import java.util.Date;

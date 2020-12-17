@@ -1,9 +1,11 @@
 package com.spotify.api.service;
 
-import com.spotify.api.models.Detail;
-import com.spotify.api.models.User;
-import com.spotify.api.models.UserToken;
-import com.spotify.api.repositories.UserRepository;
+import com.spotify.api.core.abstraction.MQService;
+import com.spotify.api.dto.MailDto;
+import com.spotify.api.model.valueObject.Detail;
+import com.spotify.api.model.User;
+import com.spotify.api.model.valueObject.UserToken;
+import com.spotify.api.repository.UserRepository;
 import com.spotify.api.util.JwtTokenUtil;
 import com.spotify.api.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +26,12 @@ public class UserService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private MQService mqService;
     public User createUserOrUpdateToken(com.wrapper.spotify.model_objects.specification.User user, UserToken token){
         User _user = userRepository.findBySpotifyId(user.getId());
 
-        if(_user == null){
+        if(Objects.isNull(_user)){
             String names[] = user.getDisplayName().split(" ");
             token.setLastChangeAt(LocalDateTime.now());
             _user = User.builder()
@@ -55,6 +59,15 @@ public class UserService {
                 .build();
         _user.getLoginDetails().add(_detail);
         userRepository.save(_user);
+        if(_user.getVersion() == 1){
+            mqService.sendMail(MailDto.builder()
+                    .from("info@songchat.com")
+                    .subject("Songchat | Bilgilendirme")
+                    .to(_user.getEmail())
+                    .deliveryType(MailDto.DeliveryType.GREETING_MAIL)
+                    .toFullName(_user.getName() + " " + _user.getSurname())
+                    .build());
+        }
         return _user;
     }
 
@@ -82,7 +95,7 @@ public class UserService {
     }
 
 
-    public User getUserByEmail(String email){
+    public User getByEmail(String email){
         if(email == null) return null;
         return userRepository.findByEmailAndEndDateNull(email);
     }

@@ -1,19 +1,14 @@
 package com.spotify.api.util;
 
-import com.spotify.api.models.User;
-import com.spotify.api.models.UserToken;
+import com.spotify.api.model.User;
+import com.spotify.api.model.valueObject.UserToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.hc.client5.http.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -80,7 +75,6 @@ public class JwtTokenUtil {
     public String doGenerateToken(Map<String, Object> claims, String subject){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
-        System.out.println("içeri" + cal);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)

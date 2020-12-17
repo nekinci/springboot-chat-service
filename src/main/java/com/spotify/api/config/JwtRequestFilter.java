@@ -1,8 +1,8 @@
 package com.spotify.api.config;
 
-import com.spotify.api.service.UserDetailsService;
+import com.spotify.api.service.authentication.UserDetailsService;
 import com.spotify.api.util.JwtTokenUtil;
-import com.spotify.api.util.StringOperations;
+import com.spotify.api.util.QueryParamsUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.experimental.ExtensionMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * Source: https://medium.com/swlh/spring-boot-security-jwt-hello-world-example-b479e457664c
  * **/
 @Component
-@ExtensionMethod({StringOperations.class})
+@ExtensionMethod({QueryParamsUtil.class})
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         else{
             String _params = httpServletRequest.getQueryString();
-            Map<String, String> queryParams = StringOperations.toMap(_params);
+            Map<String, String> queryParams = QueryParamsUtil.toMap(_params);
             boolean check =
                     Objects.nonNull(queryParams.get("type"))
                     && queryParams.get("type").equalsIgnoreCase("websocket")
