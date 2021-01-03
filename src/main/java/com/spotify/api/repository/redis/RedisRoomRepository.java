@@ -1,11 +1,11 @@
 package com.spotify.api.repository.redis;
 
 import com.spotify.api.model.redis.Room;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import com.spotify.api.model.redis.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RedisRoomRepository extends CrudRepository<Room, String> {
-
+public interface RedisRoomRepository extends QueryByExampleExecutor<Room>, CrudRepository<Room, String> {
 }

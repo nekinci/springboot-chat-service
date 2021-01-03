@@ -1,9 +1,13 @@
 package com.spotify.api.model.valueObject;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-public class Avatar {
+@NoArgsConstructor
+public class Avatar implements Serializable {
 
     private String fileName;
     private String pyhsicalPath;

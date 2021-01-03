@@ -35,7 +35,7 @@ public class RedisUserService {
     }
 
     public boolean addDestination(String email, String destination){
-        User user = userRepository.findById(email).get();
+        User user = userRepository.findById(email).orElse(null);
         if(Objects.nonNull(user)){
             List<String> destinations = user.getDestinations();
             if(Objects.isNull(destinations)){

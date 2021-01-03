@@ -17,6 +17,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -62,6 +63,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void handleWebsocketDisconnectListner(SessionDisconnectEvent event) {
         System.out.println("Session closed at: "+  new Date());
         redisUserService.remove(event.getUser().getName());
+        roomService.unsubscribe(event.getUser().getName());
+
     }
 
 

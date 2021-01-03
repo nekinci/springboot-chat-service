@@ -9,6 +9,7 @@ import java.util.List;
 public class OnlineUserDto {
     private String destination;
     private int count;
+    private String type;
     private List<User> userList;
 }
 

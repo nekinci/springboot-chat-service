@@ -17,6 +17,7 @@ public class Room {
     @Id
     private String destination;
     private List<User> userList;
+    private List<String> typingList;
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private int userCount;
 

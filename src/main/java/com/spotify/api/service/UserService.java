@@ -9,6 +9,7 @@ import com.spotify.api.repository.UserRepository;
 import com.spotify.api.util.JwtTokenUtil;
 import com.spotify.api.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class UserService {
         User _user = userRepository.findBySpotifyId(user.getId());
 
         if(Objects.isNull(_user)){
-            String names[] = user.getDisplayName().split(" ");
+            String[] names = user.getDisplayName().split(" ");
             token.setLastChangeAt(LocalDateTime.now());
             _user = User.builder()
                     .name(names.length >= 1 ? names[0] : "Unnamed")
@@ -59,7 +60,6 @@ public class UserService {
                 .build();
         _user.getLoginDetails().add(_detail);
         userRepository.save(_user);
-        if(_user.getVersion() == 1){
             mqService.sendMail(MailDto.builder()
                     .from("info@songchat.com")
                     .subject("Songchat | Bilgilendirme")
@@ -67,7 +67,6 @@ public class UserService {
                     .deliveryType(MailDto.DeliveryType.GREETING_MAIL)
                     .toFullName(_user.getName() + " " + _user.getSurname())
                     .build());
-        }
         return _user;
     }
 
@@ -88,6 +87,7 @@ public class UserService {
         }
         return null;
     }
+
 
     public User me(){
         String email = jwtTokenUtil.getEmailFromToken(servletUtil.getAuthTokenFromRequest());

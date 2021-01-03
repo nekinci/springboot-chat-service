@@ -1,5 +1,6 @@
 package com.spotify.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -14,10 +15,11 @@ public class Message {
     private String id;
     private String message;
     private String from;
-    private boolean isOwn;
     private Date date;
     private MessageType type;
 
+    private String senderId;
+    private String roomId;
     public enum MessageType{
         MESSAGE,
         JOIN,

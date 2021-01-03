@@ -25,3 +25,7 @@ exchange:
 routingKey:
   mail:
     name: email
+
+cache:
+  expirations:
+    user: 7200

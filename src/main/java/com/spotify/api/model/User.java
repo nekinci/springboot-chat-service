@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Document(collection = "users")
 @SuperBuilder
 @AllArgsConstructor
-public class User extends BaseModel {
+public class User extends BaseModel implements Serializable {
 
     public User(){
 
