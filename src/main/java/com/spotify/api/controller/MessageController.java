@@ -1,17 +1,16 @@
 package com.spotify.api.controller;
+import com.spotify.api.dto.Paginator;
 import com.spotify.api.model.Message;
 import com.spotify.api.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.List;
 
@@ -27,10 +26,10 @@ public class MessageController {
         messageService.onMessage(message, destination);
     }
 
-    @GetMapping("/messages/{destination}")
-    public Page<Message> getWithPagination(@PathVariable("destination") String destination,
-                                           @RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "3") int size){
+    @GetMapping("/api/messages/{destination}")
+    public Paginator<Message> getWithPagination(@PathVariable("destination") String destination,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "3") int size){
         Pageable pageable = PageRequest.of(page, size);
         return messageService.get(destination, pageable);
     }

@@ -1,4 +1,5 @@
 package com.spotify.api.repository;
+import com.spotify.api.dto.Paginator;
 import com.spotify.api.model.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

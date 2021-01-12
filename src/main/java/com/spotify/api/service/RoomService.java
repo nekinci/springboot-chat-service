@@ -43,6 +43,7 @@ public class RoomService {
                 Track track = spotifyService.currentPlaying(user.getUserToken());
                 room.setName(track.getName());
                 room.setId(track.getId());
+                room.setCalculatedEndTime(track.getDurationMs());
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }finally {

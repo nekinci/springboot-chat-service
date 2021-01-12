@@ -2,11 +2,22 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://nekinci:+Niyazi678+@cluster0.p7nvm.mongodb.net/songchat?retryWrites=true&w=majority
+  application:
+    name: websocket-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 jwt:
   secret: key123456
 
 server:
-  port: 8081
+  port: 8020
 
 room:
   public:

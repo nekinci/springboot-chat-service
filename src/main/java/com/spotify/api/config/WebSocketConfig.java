@@ -23,9 +23,7 @@ import java.util.HashMap;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Autowired private UserRepository userRepository;
     @Autowired private RoomService roomService;
-    @Autowired private SimpMessagingTemplate template;
     @Autowired private RedisUserService redisUserService;
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry){
