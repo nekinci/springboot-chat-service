@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://nekinci:+Niyazi678+@cluster0.p7nvm.mongodb.net/songchat?retryWrites=true&w=majority
+      uri: MONGODB_URL
   application:
     name: websocket-server
 
@@ -24,7 +24,7 @@ room:
     id: public@
     name: Herkese Açık
 ws:
-  secretKey: key123456
+  secretKey: KEY
 
 queue:
   mail:
